@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Model\Sub;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,9 +12,24 @@ class HomeController extends AbstractController
     #[Route('/home', name: 'app_home')]
     public function index(): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/HomeController.php',
-        ]);
+        $dataArray = [
+            "success" => false,
+            "sub" => $this->generateSubs(),
+        ];
+
+        return $this->json($dataArray);
+    }
+
+    protected function generateSubs(): array
+    {
+        $returnArray = [];
+
+        $sub = new Sub;
+        $sub->setName("Netflix")->setSartDate(new \DateTime);
+        var_dump($sub);
+        $returnArray[] = $sub->toArray();
+
+
+        return $returnArray;
     }
 }
