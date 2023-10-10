@@ -7,5 +7,5 @@ kernel:
     type: annotation
 
 index:
-    path:
+    path: /
     controller: App\Controller\HomeController::index
