@@ -24,9 +24,11 @@ class HomeController extends AbstractController
     {
         $returnArray = [];
 
-        $sub = new Sub;
-        $sub->setName("Netflix")->setSartDate(new \DateTime);
-        $returnArray[] = $sub->toArray();
+        $sub = (new Sub)
+        ->setName("Netflix")
+        ->setSartDate(new \DateTime);
+
+        $returnArray[] = $sub;
 
 
         return $returnArray;

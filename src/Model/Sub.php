@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 
-class Sub{
-
+class Sub implements \JsonSerializable
+{
     protected string $name;
     protected \DateTime $startDate;
 
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             "name" => $this->name,
