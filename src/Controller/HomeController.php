@@ -26,7 +26,6 @@ class HomeController extends AbstractController
 
         $sub = new Sub;
         $sub->setName("Netflix")->setSartDate(new \DateTime);
-        var_dump($sub);
         $returnArray[] = $sub->toArray();
 
 
