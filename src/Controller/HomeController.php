@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Model\Sub;
+use App\Entity\Sub;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +28,7 @@ class HomeController extends AbstractController
 
         $sub = (new Sub)
         ->setName("Netflix")
-        ->setSartDate(new \DateTime);
+        ->setStartDate(new \DateTime);
 
         $returnArray[] = $sub;
 
