@@ -11,8 +11,12 @@ index:
     controller: App\Controller\HomeController::index
     methods: GET
 
-addindex:
-    path: /add
-    controller: App\Controller\HomeController::addSub
-    methods: POST
+getSub:
+    path: /getsubs
+    controller: App\Controller\SubController::index
+    methods: GET
 
+addSub:
+    path: /addsub
+    controller: App\Controller\SubController::addSub
+    methods: POST
