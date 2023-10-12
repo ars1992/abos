@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class SubController extends AbstractController
 {
     #[Route('/sub', name: 'app_sub')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function getSubs(EntityManagerInterface $entityManager): Response
     {
         $sub = $entityManager->getRepository(Sub::class)->findAll();
 

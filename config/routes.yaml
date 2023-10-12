@@ -13,10 +13,37 @@ index:
 
 getSub:
     path: /getsubs
-    controller: App\Controller\SubController::index
+    controller: App\Controller\SubController::getSubs
     methods: GET
 
 addSub:
     path: /addsub
     controller: App\Controller\SubController::addSub
     methods: POST
+
+listPayTypes:
+    path: /payTypes
+    methods: GET
+    controller: App\Controller\PayController::list
+
+createPayType:
+    path: /payType
+    methods: POST
+    controller: App\Controller\PayController::create
+
+readPayType:
+    path: /payType
+    methods: GET
+    controller: App\Controller\PayController::read
+
+updatePayType:
+    path: /payType
+    methods: PUT
+    controller: App\Controller\PayController::update
+
+deletePayType:
+    path: /payType
+    methods: DELETE
+    controller: App\Controller\PayController::delete
+
+
