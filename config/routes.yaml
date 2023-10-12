@@ -9,3 +9,10 @@ kernel:
 index:
     path: /
     controller: App\Controller\HomeController::index
+    methods: GET
+
+addindex:
+    path: /add
+    controller: App\Controller\HomeController::addSub
+    methods: POST
+
