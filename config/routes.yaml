@@ -37,7 +37,7 @@ readPayType:
     controller: App\Controller\PayController::read
 
 updatePayType:
-    path: /payType
+    path: /payType/{id}
     methods: PUT
     controller: App\Controller\PayController::update
 

@@ -50,8 +50,33 @@ class PayController extends AbstractController
         
     }
 
-    public function update(): Response
+    public function update(int $id, Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
+
+        $payTybe = $entityManager->getRepository(Pay::class)->find($id);
+        
+        if ( ! $payTybe){
+            return $this->json([], 418);
+        }
+
+        $payName = $request->request->get("name");
+        $description = $request->request->get("description", "");
+
+        $pay = (new Pay)
+            ->setName($payName)
+            ->setDescription($description);
+
+        $errors = $validator->validate($pay);
+
+        if (count($errors) <= 0) {
+            $entityManager->persist($pay);
+            $entityManager->flush();
+            return $this->json(["succes" => true, "pay" => $pay], 201);
+        }
+
+        return $this->render('author/validation.html.twig', [
+            'errors' => $errors,
+        ]);
         
     }
 
