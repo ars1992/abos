@@ -11,15 +11,24 @@ index:
     controller: App\Controller\HomeController::index
     methods: GET
 
-getSub:
-    path: /getsubs
-    controller: App\Controller\SubController::getSubs
-    methods: GET
 
-addSub:
-    path: /addsub
-    controller: App\Controller\SubController::addSub
-    methods: POST
+
+# listSubs:
+#     path: /subs
+#     methods: GET
+#     controller: App\Controller\SubController::list
+
+# createSub:
+#     path: /sub
+#     methods: POST
+#     controller: App\Controller\SubController::create
+
+updateSub:
+    path: /sub/{id}
+    methods: PUT
+    controller: App\Controller\SubController::update
+
+
 
 listPayTypes:
     path: /payTypes

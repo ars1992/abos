@@ -16,47 +16,68 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class SubController extends AbstractController
 {
     #[Route('/sub', name: 'app_sub')]
-    public function getSubs(EntityManagerInterface $entityManager): Response
+    public function list(EntityManagerInterface $entityManager): Response
     {
-        $sub = $entityManager->getRepository(Sub::class)->findAll();
-
-        if (!$sub) {
+        $subs = $entityManager->getRepository(Sub::class)->findAll();
+        if (!$subs) {
             return $this->json(["succes" => false], 418);
         }
 
         $dataArray = [
-            "success" => false,
-            "sub" => $sub,
+            "success" => true,
+            "data" => $subs,
         ];
 
         return $this->json($dataArray);
     }
 
-    public function addSub(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
-        $subName = $request->request->get("name");
-        $subStartdate = $request->request->get("startdate");
-
-        $sub = (new Sub)
-            ->setName($subName)
-            ->setStartDate(new DateTime($subStartdate));
-
+        $sub = new Sub;
+        $requestData = $request->request->all();
+        $this->setDataToClass($requestData, $sub);
         $errors = $validator->validate($sub);
 
         if (count($errors) <= 0) {
             $entityManager->persist($sub);
             $entityManager->flush();
-            return $this->json(["succes" => true, "sub" => $sub], 201);
+            return $this->json(["succes" => true, "data" => $sub], 201);
         }
-
-        // /** @var ConstraintViolationList $vio */
-        // foreach($errors as $vio){
-        //     echo("test");
-        //     $vio->getMessage();
-        // }
 
         return $this->render('author/validation.html.twig', [
             'errors' => $errors,
         ]);
+    }
+
+    public function update(int $id, Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
+    {
+        $subType = $entityManager->getRepository(Sub::class)->find($id);
+        if ( ! $subType){
+            return $this->json([], 418);
+        }
+
+        $requestData = $request->request->all();
+        $this->setDataToClass($requestData, $subType);
+
+        $errors = $validator->validate($subType);
+
+        if (count($errors) <= 0) {
+            $entityManager->flush();
+            return $this->json(["succes" => true, "data" => $subType], 201);
+        }
+
+        return $this->render('author/validation.html.twig', [
+            'errors' => $errors,
+        ]);
+    }
+
+    private function setDataToClass(array $requestData, object $object)
+    {
+        foreach($requestData as $key => $data){
+            $methodName = "set" . ucfirst($key);
+            if( ! empty($data) && method_exists($object, $methodName)){
+                $object->{$methodName}($data);
+            }
+        }
     }
 }
