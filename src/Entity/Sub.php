@@ -26,6 +26,7 @@ class Sub implements \JsonSerializable
     public function jsonSerialize() : array
     {
         return [
+            "Id" => $this->getId(),
             "Name" => $this->name,
             "StartDate" => $this->getStartDate(),
         ];

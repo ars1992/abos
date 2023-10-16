@@ -25,6 +25,7 @@ class Pay implements \JsonSerializable
     public function jsonSerialize() : array
     {
         return [
+            "Id" => $this->getId(),
             "Name" => $this->name,
             "Description" => $this->description ?? "",
         ];
