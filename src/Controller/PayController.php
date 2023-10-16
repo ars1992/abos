@@ -24,25 +24,21 @@ class PayController extends AbstractController
 
     public function create(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
-        $payName = $request->request->get("name");
-        $description = $request->request->get("description", "");
+        $payType = (new Pay);
+        $requestData = $request->request->all();
+        $this->setDataToClass($requestData, $payType);
 
-        $pay = (new Pay)
-            ->setName($payName)
-            ->setDescription($description);
-
-        $errors = $validator->validate($pay);
+        $errors = $validator->validate($payType);
 
         if (count($errors) <= 0) {
-            $entityManager->persist($pay);
+            $entityManager->persist($payType);
             $entityManager->flush();
-            return $this->json(["succes" => true, "pay" => $pay], 201);
+            return $this->json(["succes" => true, "pay" => $payType], 201);
         }
 
         return $this->render('author/validation.html.twig', [
             'errors' => $errors,
         ]);
-        
     }
 
     public function read(): Response
@@ -52,37 +48,40 @@ class PayController extends AbstractController
 
     public function update(int $id, Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
-
-        $payTybe = $entityManager->getRepository(Pay::class)->find($id);
+        $payType = $entityManager->getRepository(Pay::class)->find($id);
         
-        if ( ! $payTybe){
+        if ( ! $payType){
             return $this->json([], 418);
         }
 
-        $payName = $request->request->get("name");
-        $description = $request->request->get("description", "");
+        $requestData = $request->request->all();
+        $this->setDataToClass($requestData, $payType);
 
-        $pay = (new Pay)
-            ->setName($payName)
-            ->setDescription($description);
-
-        $errors = $validator->validate($pay);
+        $errors = $validator->validate($payType);
 
         if (count($errors) <= 0) {
-            $entityManager->persist($pay);
             $entityManager->flush();
-            return $this->json(["succes" => true, "pay" => $pay], 201);
+            return $this->json(["succes" => true, "pay" => $payType], 201);
         }
 
         return $this->render('author/validation.html.twig', [
             'errors' => $errors,
         ]);
-        
     }
 
     public function delete(): Response
     {
         
+    }
+
+    private function setDataToClass(array $requestData, object $payType)
+    {
+        foreach($requestData as $key => $data){
+            $methodName = "set" . ucfirst($key);
+            if( ! empty($data) && method_exists($payType, $methodName)){
+                $payType->{$methodName}($data);
+            }
+        }
     }
 
 }
