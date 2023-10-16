@@ -23,12 +23,18 @@ class Sub implements \JsonSerializable
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $startDate = null;
 
-    public function jsonSerialize() : array
+    #[ORM\ManyToOne(inversedBy: 'sub')]
+    private ?Pay $pay = null;
+
+    public function jsonSerialize(): array
     {
         return [
+            "type" => "sub",
             "Id" => $this->getId(),
-            "Name" => $this->name,
-            "StartDate" => $this->getStartDate(),
+            "attributes" => [
+                "Name" => $this->name,
+                "StartDate" => $this->getStartDate(),
+            ]
         ];
     }
 
@@ -57,6 +63,18 @@ class Sub implements \JsonSerializable
     public function setStartDate(\DateTimeInterface $startDate): self
     {
         $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    public function getPay(): ?Pay
+    {
+        return $this->pay;
+    }
+
+    public function setPay(?Pay $pay): static
+    {
+        $this->pay = $pay;
 
         return $this;
     }

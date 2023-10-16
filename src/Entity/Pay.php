@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PayRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Validator\Constraints as Assert;
@@ -22,12 +24,23 @@ class Pay implements \JsonSerializable
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    public function jsonSerialize() : array
+    #[ORM\OneToMany(mappedBy: 'pay', targetEntity: sub::class)]
+    private Collection $sub;
+
+    public function __construct()
+    {
+        $this->sub = new ArrayCollection();
+    }
+
+    public function jsonSerialize(): array
     {
         return [
-            "Id" => $this->getId(),
-            "Name" => $this->name,
-            "Description" => $this->description ?? "",
+            "type" => "pay",
+            "id" => $this->getId(),
+            "attributes" => [
+                "name" => $this->name,
+                "description" => $this->description ?? "",
+            ]
         ];
     }
 
@@ -56,6 +69,36 @@ class Pay implements \JsonSerializable
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, sub>
+     */
+    public function getSub(): Collection
+    {
+        return $this->sub;
+    }
+
+    public function addSub(sub $sub): static
+    {
+        if (!$this->sub->contains($sub)) {
+            $this->sub->add($sub);
+            $sub->setPay($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSub(sub $sub): static
+    {
+        if ($this->sub->removeElement($sub)) {
+            // set the owning side to null (unless already changed)
+            if ($sub->getPay() === $this) {
+                $sub->setPay(null);
+            }
+        }
 
         return $this;
     }
