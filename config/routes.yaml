@@ -13,15 +13,15 @@ index:
 
 
 
-# listSubs:
-#     path: /subs
-#     methods: GET
-#     controller: App\Controller\SubController::list
+listSubs:
+    path: /subs
+    methods: GET
+    controller: App\Controller\SubController::list
 
-# createSub:
-#     path: /sub
-#     methods: POST
-#     controller: App\Controller\SubController::create
+createSub:
+    path: /sub
+    methods: POST
+    controller: App\Controller\SubController::create
 
 updateSub:
     path: /sub/{id}

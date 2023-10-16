@@ -33,9 +33,14 @@ class SubController extends AbstractController
 
     public function create(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
-        $sub = new Sub;
-        $requestData = $request->request->all();
-        $this->setDataToClass($requestData, $sub);
+
+        $subName = $request->request->get("name");
+        $subStartdate = $request->request->get("startDate");
+
+        $sub = (new Sub)
+            ->setName($subName)
+            ->setStartDate(new DateTime($subStartdate));
+
         $errors = $validator->validate($sub);
 
         if (count($errors) <= 0) {
@@ -47,6 +52,7 @@ class SubController extends AbstractController
         return $this->render('author/validation.html.twig', [
             'errors' => $errors,
         ]);
+
     }
 
     public function update(int $id, Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
