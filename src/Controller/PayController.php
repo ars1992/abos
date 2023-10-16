@@ -74,12 +74,12 @@ class PayController extends AbstractController
         
     }
 
-    private function setDataToClass(array $requestData, object $payType)
+    private function setDataToClass(array $requestData, object $object)
     {
         foreach($requestData as $key => $data){
             $methodName = "set" . ucfirst($key);
-            if( ! empty($data) && method_exists($payType, $methodName)){
-                $payType->{$methodName}($data);
+            if( ! empty($data) && method_exists($object, $methodName)){
+                $object->{$methodName}($data);
             }
         }
     }
