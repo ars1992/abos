@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Sub;
 use App\Entity\Pay;
+use App\Serializer\SubNormalizer;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,8 +29,8 @@ class SubController extends AbstractController
             return $this->json(["succes" => false], 418);
         }
 
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, []);
+        $normalizers = new SubNormalizer();
+        $serializer = new Serializer([$normalizers]);
 
         $subsCollection = [];
         foreach($subs as $sub){
