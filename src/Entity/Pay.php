@@ -24,7 +24,7 @@ class Pay implements \JsonSerializable
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\OneToMany(mappedBy: 'pay', targetEntity: sub::class)]
+    #[ORM\OneToMany(mappedBy: 'pay', targetEntity: Sub::class)]
     private Collection $sub;
 
     public function __construct()
@@ -74,14 +74,14 @@ class Pay implements \JsonSerializable
     }
 
     /**
-     * @return Collection<int, sub>
+     * @return Collection<int, Sub>
      */
     public function getSub(): Collection
     {
         return $this->sub;
     }
 
-    public function addSub(sub $sub): static
+    public function addSub(Sub $sub): static
     {
         if (!$this->sub->contains($sub)) {
             $this->sub->add($sub);
@@ -91,7 +91,7 @@ class Pay implements \JsonSerializable
         return $this;
     }
 
-    public function removeSub(sub $sub): static
+    public function removeSub(Sub $sub): static
     {
         if ($this->sub->removeElement($sub)) {
             // set the owning side to null (unless already changed)
