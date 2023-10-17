@@ -10,7 +10,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SubRepository::class)]
-class Sub implements \JsonSerializable
+class Sub 
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,41 +26,6 @@ class Sub implements \JsonSerializable
 
     #[ORM\ManyToOne(inversedBy: 'sub')]
     private ?Pay $pay = null;
-
-
-    public function jsonSerialize(): array
-    {
-        $returnValue = [
-            "type" => "sub",
-            "Id" => $this->getId(),
-            "attributes" => [
-                "Name" => $this->name,
-                "StartDate" => $this->getStartDate(),
-            ],
-            "links" => [
-                //TODO Router nutzen für Link
-                "self" => "/sub/" . $this->getId()
-            ],
-        ];
-
-        if ($this->getPay()) {
-            $this->addPayRelation($returnValue);
-        }
-
-        return $returnValue;
-    }
-
-    private function addPayRelation(array &$returnValue): void
-    {
-        $returnValue["relationships"] = [
-            "pay" => [
-                "links" => [
-                    "self" => "",
-                    "related" => "/payType/" . $this->getPay()->getId(),
-                ]
-            ]
-        ];
-    }
 
     public function getId(): ?int
     {

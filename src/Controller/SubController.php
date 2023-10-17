@@ -16,6 +16,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class SubController extends AbstractController
 {
@@ -28,13 +29,18 @@ class SubController extends AbstractController
         }
 
         $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, []);
+
+        $subsCollection = [];
         foreach($subs as $sub){
-            $array = $normalizers[0]->normalize($sub);
-            dd($array);
+            $array = $serializer->normalize($sub, null, ["circular_reference_handler" => function ($object) {
+                return $object->getId();
+            }]);
+            $subsCollection[] = $array;
         }
 
         $dataArray = [
-            "data" => $subs,
+            "data" => $subsCollection,
             "links" => $router->generate("listSubs"),
         ];
 
@@ -66,11 +72,10 @@ class SubController extends AbstractController
     public function read(int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
         $sub = $entityManager->getRepository(Sub::class)->find($id);
-        if($sub){
-            return $this->json(["data" =>$sub], 200);
+        if ($sub) {
+            return $this->json(["data" => $sub], 200);
         }
         return $this->json([], 418);
-
     }
 
     public function update(int $id, Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
