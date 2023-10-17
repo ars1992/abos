@@ -5,8 +5,6 @@ namespace App\Entity;
 use App\Repository\SubRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpKernel\EventListener\RouterListener;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SubRepository::class)]

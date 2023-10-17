@@ -29,7 +29,7 @@ class SubController extends AbstractController
             return $this->json(["succes" => false], 418);
         }
 
-        $normalizers = new SubNormalizer();
+        $normalizers = new SubNormalizer($router);
         $serializer = new Serializer([$normalizers]);
 
         $subsCollection = [];

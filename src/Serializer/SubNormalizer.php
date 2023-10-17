@@ -5,21 +5,17 @@ namespace App\Serializer;
 use App\Entity\Sub;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class SubNormalizer implements NormalizerInterface
 {
 
-    // private UrlGeneratorInterface $router;
-    // private ObjectNormalizer $normalizer;
 
-    // public function __construct(
-    //     UrlGeneratorInterface $router,
-    //     ObjectNormalizer $normalizer,
-    // ) {
-    //     $this->router = $router;
-    //     $this->normalizer = $normalizer;
-    // }
+
+    public function __construct(
+        private UrlGeneratorInterface $router,
+        //private ObjectNormalizer $normalizer,
+    ) {
+    }
 
     /**
      * @param Subscription $object
@@ -38,17 +34,35 @@ class SubNormalizer implements NormalizerInterface
             "startDate" => $object->getStartDate(),
         ];
         $returnData["links"] = [
-            "self" => "",
-        ];
-        $returnData["relationships"] = [
-            "pay" => [
-                "links" => [
-                    "related" => ""
-                ]
-            ]
+            "self" => $this->router->generate("readSub", ["id" => $object->getId()]),
         ];
 
+
+        $this->createRelationLinks($object, $returnData);
+
+
         return $returnData;
+    }
+
+    private function createRelationLinks($object, array &$returnData): void
+    {
+        if ($object->getPay()) {
+            $returnData["relationships"] = [
+                "pay" => [
+                    "links" => [
+                        "related" => $this->router->generate("readPayType", ["id" => $object->getPay()->getId()])
+                    ]
+                ]
+            ];
+        } else {
+            $returnData["relationships"] = [
+                "pay" => [
+                    "links" => [
+                        "related" => null
+                    ]
+                ]
+            ];
+        }
     }
 
     public function supportsNormalization($data, string $format = null, array $context = []): bool
