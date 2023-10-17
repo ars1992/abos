@@ -5,18 +5,20 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Sub;
+use App\Entity\Pay;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SubController extends AbstractController
 {
     #[Route('/subs', name: 'app_sub')]
-    public function list(EntityManagerInterface $entityManager): Response
+    public function list(EntityManagerInterface $entityManager, RouterInterface $router): Response
     {
         $subs = $entityManager->getRepository(Sub::class)->findAll();
         if (!$subs) {
@@ -24,8 +26,8 @@ class SubController extends AbstractController
         }
 
         $dataArray = [
-            "success" => true,
             "data" => $subs,
+            "links" => $router->generate("listSubs"),
         ];
 
         return $this->json($dataArray);
@@ -53,12 +55,34 @@ class SubController extends AbstractController
         ]);
     }
 
+    public function read(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $sub = $entityManager->getRepository(Sub::class)->find($id);
+        if($sub){
+            return $this->json(["data" =>$sub], 200);
+        }
+        return $this->json([], 418);
+
+    }
+
     public function update(int $id, Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
         $subType = $entityManager->getRepository(Sub::class)->find($id);
-        if ( ! $subType){
+        if (!$subType) {
             return $this->json([], 418);
         }
+
+
+        // $payId = (int) $request->request->get("payType");
+        // if($payId){
+        //     $payType = $entityManager->getRepository(Pay::class)->find($payId);
+        //     if($payType){
+        //    // in Symfony 6 nicht möglich
+        //         $request->request->set("payType", array($payType));
+        //     } else {
+        //         $request->request->remove("payType");
+        //     }
+        // }
 
         $requestData = $request->request->all();
         $this->setDataToClass($requestData, $subType);
@@ -77,9 +101,9 @@ class SubController extends AbstractController
 
     private function setDataToClass(array $requestData, object $object)
     {
-        foreach($requestData as $key => $data){
+        foreach ($requestData as $key => $data) {
             $methodName = "set" . ucfirst($key);
-            if( ! empty($data) && method_exists($object, $methodName)){
+            if (!empty($data) && method_exists($object, $methodName)) {
                 $object->{$methodName}($data);
             }
         }

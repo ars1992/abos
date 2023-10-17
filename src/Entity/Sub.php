@@ -5,7 +5,8 @@ namespace App\Entity;
 use App\Repository\SubRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\HttpKernel\EventListener\RouterListener;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SubRepository::class)]
@@ -26,6 +27,7 @@ class Sub implements \JsonSerializable
     #[ORM\ManyToOne(inversedBy: 'sub')]
     private ?Pay $pay = null;
 
+
     public function jsonSerialize(): array
     {
         return [
@@ -34,6 +36,10 @@ class Sub implements \JsonSerializable
             "attributes" => [
                 "Name" => $this->name,
                 "StartDate" => $this->getStartDate(),
+            ], 
+            "links" => [
+                //TODO Router nutzen für Link
+                "self" => "/sub/" . $this->getId()
             ]
         ];
     }

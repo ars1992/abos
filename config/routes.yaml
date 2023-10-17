@@ -28,6 +28,11 @@ updateSub:
     methods: PUT
     controller: App\Controller\SubController::update
 
+readSub:
+    path: /sub/{id}
+    methods: GET
+    controller: App\Controller\SubController::read
+
 
 
 listPayTypes:
