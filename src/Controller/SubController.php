@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
 class SubController extends AbstractController
 {
     #[Route('/subs', name: 'app_sub')]
@@ -23,6 +25,12 @@ class SubController extends AbstractController
         $subs = $entityManager->getRepository(Sub::class)->findAll();
         if (!$subs) {
             return $this->json(["succes" => false], 418);
+        }
+
+        $normalizers = [new ObjectNormalizer()];
+        foreach($subs as $sub){
+            $array = $normalizers[0]->normalize($sub);
+            dd($array);
         }
 
         $dataArray = [
