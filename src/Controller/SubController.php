@@ -22,15 +22,14 @@ use Symfony\Component\Serializer\Serializer;
 class SubController extends AbstractController
 {
     #[Route('/subs', name: 'app_sub')]
-    public function list(EntityManagerInterface $entityManager, RouterInterface $router): Response
+    public function list(EntityManagerInterface $entityManager, RouterInterface $router, SubNormalizer $subNormalizer): Response
     {
         $subs = $entityManager->getRepository(Sub::class)->findAll();
         if (!$subs) {
             return $this->json(["succes" => false], 418);
         }
 
-        $normalizers = new SubNormalizer($router);
-        $serializer = new Serializer([$normalizers]);
+        $serializer = new Serializer([$subNormalizer]);
 
         $subsCollection = [];
         foreach($subs as $sub){

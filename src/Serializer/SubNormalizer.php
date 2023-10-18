@@ -8,17 +8,13 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class SubNormalizer implements NormalizerInterface
 {
-
-
-
     public function __construct(
         private UrlGeneratorInterface $router,
-        //private ObjectNormalizer $normalizer,
     ) {
     }
 
     /**
-     * @param Subscription $object
+     * @param Sub $object
      * @param string|null $format
      * @param array $context
      * @return array|\ArrayObject|bool|float|int|string|null
@@ -37,14 +33,12 @@ class SubNormalizer implements NormalizerInterface
             "self" => $this->router->generate("readSub", ["id" => $object->getId()]),
         ];
 
-
         $this->createRelationLinks($object, $returnData);
-
 
         return $returnData;
     }
 
-    private function createRelationLinks($object, array &$returnData): void
+    private function createRelationLinks(Sub $object, array &$returnData): void
     {
         if ($object->getPay()) {
             $returnData["relationships"] = [
