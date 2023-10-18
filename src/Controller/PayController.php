@@ -64,9 +64,7 @@ class PayController extends AbstractController
             return $this->json(["succes" => true, "pay" => $payType], 201);
         }
 
-        return $this->render('author/validation.html.twig', [
-            'errors' => $errors,
-        ]);
+        return $this->json([])
     }
 
     public function delete(): Response
